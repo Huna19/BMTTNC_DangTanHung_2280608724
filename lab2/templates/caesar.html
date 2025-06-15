@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Caesar Cipher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container">
+        <table class="table">
+            <tr><td style="text-align: center; font-weight: bold; font-size: 25px;">CAESAR CIPHER</td></tr>
+            <tr><td style="font-weight: bold; color: blue">ENCRYPTION</td></tr>
+            <tr>
+                <td>
+                    <div class="mb-3">
+                        <label class="form-label">Plain text:</label>
+                        <input type="text" class="form-control" id="inputPlainText" placeholder="Input Plain Text" required autofocus/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key:</label>
+                        <input type="number" class="form-control" id="inputKeyPlain" placeholder="Input Key" required/>
+                    </div>
+                    <button onclick="encrypt()" class="btn btn-primary">Encrypt</button>
+                    <div class="mb-3">
+                        <label class="form-label">Cipher Text:</label>
+                        <input type="text" class="form-control" id="outputCipherText" placeholder="Cipher Text" readonly/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr><td style="font-weight: bold; color: blue">DECRYPTION</td></tr>
+            <tr>
+                <td>
+                    <div class="mb-3">
+                        <label class="form-label">Cipher text:</label>
+                        <input type="text" class="form-control" id="inputCipherText" placeholder="Input Cipher Text" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key:</label>
+                        <input type="number" class="form-control" id="inputKeyCipher" placeholder="Input Key" required/>
+                    </div>
+                    <button onclick="decrypt()" class="btn btn-success">Decrypt</button>
+                    <div class="mb-3">
+                        <label class="form-label">Plain Text:</label>
+                        <input type="text" class="form-control" id="outputPlainText" placeholder="Plain Text" readonly/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function encrypt() {
+            let plainText = document.getElementById("inputPlainText").value;
+            let key = parseInt(document.getElementById("inputKeyPlain").value);
+            let cipherText = "";
+
+            for (let i = 0; i < plainText.length; i++) {
+                let charCode = plainText.charCodeAt(i);
+                if (charCode >= 97 && charCode <= 122) { // lowercase a-z
+                    cipherText += String.fromCharCode((charCode - 97 + key) % 26 + 97);
+                } else if (charCode >= 65 && charCode <= 90) { // uppercase A-Z
+                    cipherText += String.fromCharCode((charCode - 65 + key) % 26 + 65);
+                } else {
+                    cipherText += plainText[i];
+                }
+            }
+            document.getElementById("outputCipherText").value = cipherText;
+        }
+
+        function decrypt() {
+            let cipherText = document.getElementById("inputCipherText").value;
+            let key = parseInt(document.getElementById("inputKeyCipher").value);
+            let plainText = "";
+
+            for (let i = 0; i < cipherText.length; i++) {
+                let charCode = cipherText.charCodeAt(i);
+                if (charCode >= 97 && charCode <= 122) { // lowercase a-z
+                    plainText += String.fromCharCode((charCode - 97 - key + 26) % 26 + 97);
+                } else if (charCode >= 65 && charCode <= 90) { // uppercase A-Z
+                    plainText += String.fromCharCode((charCode - 65 - key + 26) % 26 + 65);
+                } else {
+                    plainText += cipherText[i];
+                }
+            }
+            document.getElementById("outputPlainText").value = plainText;
+        }
+    </script>
+</body>
+</html>

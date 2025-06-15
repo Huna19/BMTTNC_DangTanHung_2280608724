@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Railfence Cipher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container">
+        <table class="table">
+            <tr><td style="text-align: center; font-weight: bold; font-size: 25px;">RAILFENCE CIPHER</td></tr>
+            <tr><td style="font-weight: bold; color: blue">ENCRYPTION</td></tr>
+            <tr>
+                <td>
+                    <div class="mb-3">
+                        <label class="form-label">Plain text:</label>
+                        <input type="text" class="form-control" id="inputPlainText" placeholder="Input Plain Text" required autofocus/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key (number of rails):</label>
+                        <input type="number" class="form-control" id="inputKeyPlain" placeholder="Input Key" min="2" required/>
+                    </div>
+                    <button onclick="encrypt()" class="btn btn-primary">Encrypt</button>
+                    <div class="mb-3">
+                        <label class="form-label">Cipher Text:</label>
+                        <input type="text" class="form-control" id="outputCipherText" placeholder="Cipher Text" readonly/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr><td style="font-weight: bold; color: blue">DECRYPTION</td></tr>
+            <tr>
+                <td>
+                    <div class="mb-3">
+                        <label class="form-label">Cipher text:</label>
+                        <input type="text" class="form-control" id="inputCipherText" placeholder="Input Cipher Text" requiredТак/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key (number of rails):</label>
+                        <input type="number" class="form-control" id="inputKeyCipher" placeholder="Input Key" min="2" required/>
+                    </div>
+                    <button onclick="decrypt()" class="btn btn-success">Decrypt</button>
+                    <div class="mb-3">
+                        <label class="form-label">Plain Text:</label>
+                        <input type="text" class="form-control" id="outputPlainText" placeholder="Plain Text" readonly/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function encrypt() {
+            let plainText = document.getElementById("inputPlainText").value;
+            let key = parseInt(document.getElementById("inputKeyPlain").value);
+            let rail = Array(key).fill().map(() => []);
+            let dirDown = false;
+            let row = 0;
+
+            // Place characters in rail pattern
+            for (let i = 0; i < plainText.length; i++) {
+                rail[row].push(plainText[i]);
+                if (row === 0 || row === key - 1) dirDown = !dirDown;
+                row += dirDown ? 1 : -1;
+            }
+
+            // Read rails to form cipher text
+            let cipherText = "";
+            for (let i = 0; i < key; i++) {
+                cipherText += rail[i].join("");
+            }
+            document.getElementById("outputCipherText").value = cipherText;
+        }
+
+        function decrypt() {
+            let cipherText = document.getElementById("inputCipherText").value;
+            let key = parseInt(document.getElementById("inputKeyCipher").value);
+            let rail = Array(key).fill().map(() => Array(cipherText.length).fill(null));
+            let dirDown = false;
+            let row = 0;
+
+            // Mark positions in rail pattern
+            for (let i = 0; i < cipherText.length; i++) {
+                rail[row][i] = "*";
+                if (row === 0 || row === key - 1) dirDown = !dirDown;
+                row += dirDown ? 1 : -1;
+            }
+
+            // Fill the rail with cipher text
+            let index = 0;
+            for (let i = 0; i < key; i++) {
+                for (let j = 0; j < cipherText.length; j++) {
+                    if (rail[i][j] === "*" && index < cipherText.length) {
+                        rail[i][j] = cipherText[index++];
+                    }
+                }
+            }
+
+            // Read the rail in zigzag pattern to form plain text
+            let plainText = "";
+            row = 0;
+            dirDown = false;
+            for (let i = 0; i < cipherText.length; i++) {
+                plainText += rail[row][i];
+                if (row === 0 || row === key - 1) dirDown = !dirDown;
+                row += dirDown ? 1 : -1;
+            }
+            document.getElementById("outputPlainText").value = plainText;
+        }
+    </script>
+</body>
+</html>

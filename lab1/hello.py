@@ -1,0 +1,1 @@
+print("Xin Chao Ninh Thuan")
